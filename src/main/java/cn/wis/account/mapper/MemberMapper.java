@@ -9,11 +9,11 @@ import cn.wis.account.model.table.Member;
 public interface MemberMapper extends BaseMapper<Member> {
 
 	@Select({"SELECT * FROM member "
-			+ "WHERE nickname = #{nickname} "})
+			+ "WHERE nickname = #{nickname}"})
 	Member selectByNickname(@Param("nickname") String nickname);
 
 	@Select({"SELECT COUNT(role_id) FROM member "
-			+ "WHERE role_id = #{roleId} "})
+			+ "WHERE role_id = #{roleId}"})
 	Integer countRoleMemberNumber(@Param("roleId") String roleId);
 
 }

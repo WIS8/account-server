@@ -98,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	private Member checkNicknameAndPassword(String nickname, String password) {
-		Member member = memberMapper.selectById(nickname);
+		Member member = memberMapper.selectByNickname(nickname);
 		if (ResultHelper.notAn(member)) {
 			throw new ServiceException(ResultEnum.NO_SUCH_ACCOUNT);
 		}

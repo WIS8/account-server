@@ -56,6 +56,11 @@ public class ApplicationController {
 		return Result.trueResult(appService.search(page));
 	}
 
+	@GetMapping("/get-all-mine-app")
+	public Result searchAllMineApp() {
+		return Result.trueResult(appService.searchAllMineApp());
+	}
+
 	private void checkUpdateFields(ApplicationUpdateRequest request) {
 		ParamHelper.checkValue(request.getId());
 		int count = 0;

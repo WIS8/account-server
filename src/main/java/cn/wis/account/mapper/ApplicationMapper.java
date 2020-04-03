@@ -1,6 +1,7 @@
 package cn.wis.account.mapper;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -21,5 +22,14 @@ public interface ApplicationMapper extends BaseMapper<Application> {
 
 	@Select({"SELECT COUNT(id) FROM application"})
 	int countByKeyWord(@Param("keyWord") String keyWord);
+
+	@Select({"<script>"
+			+ "SELECT id, plugin_name, description FROM application "
+			+ "WHERE id IN "
+			+ "<foreach collection='set' item='item' open='(' separator=',' close=')'>"
+			+ "#{item}"
+			+ "</foreach>"
+			+ "</script>"})
+	List<Application> selectAllByIds(@Param("set") Set<String> ids);
 
 }

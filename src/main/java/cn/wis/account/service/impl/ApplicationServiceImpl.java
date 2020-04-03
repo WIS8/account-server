@@ -1,5 +1,9 @@
 package cn.wis.account.service.impl;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -9,18 +13,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.wis.account.component.AccountInitializer;
 import cn.wis.account.mapper.ApiMapper;
 import cn.wis.account.mapper.ApplicationMapper;
+import cn.wis.account.mapper.AuthorityMapper;
 import cn.wis.account.mapper.ParameterMapper;
 import cn.wis.account.mapper.ProviderMapper;
 import cn.wis.account.model.dto.ApplicationDto;
 import cn.wis.account.model.entity.Page;
+import cn.wis.account.model.enums.RuleListEnum;
 import cn.wis.account.model.request.app.ApplicationUpdateRequest;
 import cn.wis.account.model.request.feign.ApplicationConfirmRequest;
 import cn.wis.account.model.result.ResultEnum;
 import cn.wis.account.model.result.ServiceException;
+import cn.wis.account.model.table.Api;
 import cn.wis.account.model.table.Application;
+import cn.wis.account.model.vo.AppVo;
 import cn.wis.account.model.vo.ApplicationVo;
 import cn.wis.account.model.vo.PageVo;
 import cn.wis.account.service.ApplicationService;
@@ -44,7 +53,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private ProviderMapper providerMapper;
 
 	@Resource
-	private ParameterMapper parameterMapper;
+	private ParameterMapper paramMapper;
+
+	@Resource
+	private AuthorityMapper authMapper;
 
 	@Resource
 	private AccountInitializer initializer;
@@ -90,9 +102,29 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public PageVo search(Page page) {
 		PageVo pageVo = new PageVo();
 		pageVo.setData(appMapper.selectPage(page.getIndex(), page.getSize())
-				.parallelStream().map(this::getAppVo).collect(Collectors.toList()));
+				.parallelStream().map(this::getApplicationVo).collect(Collectors.toList()));
 		pageVo.setTotal(appMapper.countByKeyWord(page.getKeyWord()));
 		return null;
+	}
+
+	@Override
+	public List<AppVo> searchAllMineApp() {
+		List<Api> apiRules = apiMapper.selectAllByRole(getLoginMember(http).getRoleId());
+		List<String> blackList = CollectionUtil.isEmpty(apiRules)
+				? Collections.emptyList() : apiRules.parallelStream()
+						.filter(apiRule -> RuleListEnum.BLACK.getCode() == apiRule.getAccessRule())
+						.map(Api::getId).collect(Collectors.toList());
+		Set<String> whiteApps = CollectionUtil.isEmpty(apiRules)
+				? new HashSet<String>() : apiRules.parallelStream()
+				        .filter(apiRule -> RuleListEnum.WHITE.getCode() == apiRule.getAccessRule())
+				        .map(Api::getAppId).collect(Collectors.toSet());
+		apiRules = apiMapper.selectAllNotInRuleOrApi(blackList, RuleListEnum.WHITE.getCode());
+		if (CollectionUtil.isNotEmpty(apiRules)) {
+			apiRules.stream().forEach(api -> whiteApps.add(api.getAppId()));
+		}
+		return CollectionUtil.isEmpty(whiteApps) ? Collections.emptyList()
+				: appMapper.selectAllByIds(whiteApps).parallelStream()
+				        .map(this::getAppVo).collect(Collectors.toList());
 	}
 
 	private ApplicationDto getDtoIfAppInDB(String appName) {
@@ -130,19 +162,27 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private void checkForeignKeyInDB(String appId) {
 		int count = apiMapper.countByApp(appId);
 		count += providerMapper.countByApp(appId);
-		count += parameterMapper.countByApp(appId);
+		count += paramMapper.countByApp(appId);
 		if (count != 0) {
 			throw new ServiceException(ResultEnum.DELETE_ERROR, "appId存在外键：" + count);
 		}
 	}
 
-	private ApplicationVo getAppVo(Application app) {
+	private ApplicationVo getApplicationVo(Application app) {
 		ApplicationVo appVo = new ApplicationVo();
 		BeanUtil.copyProperties(app, appVo);
 		appVo.setApiNumber(apiMapper.countByApp(app.getId()));
 		appVo.setProviderNumber(providerMapper.countByApp(app.getId()));
-		appVo.setParameterNumber(parameterMapper.countByApp(app.getId()));
+		appVo.setParameterNumber(paramMapper.countByApp(app.getId()));
 		return appVo;
+	}
+
+	private AppVo getAppVo(Application app) {
+		AppVo vo = new AppVo();
+		vo.setId(app.getId());
+		vo.setName(app.getPluginName());
+		vo.setDescription(app.getDescription());
+		return vo;
 	}
 
 }

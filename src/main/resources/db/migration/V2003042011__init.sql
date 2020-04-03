@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS `api`
 
 ALTER TABLE `api`
 ADD UNIQUE INDEX `api_name_unique` (`appellation`),
-ADD INDEX `api_app_id_common` (`app_id`);
+ADD INDEX `api_app_id_common` (`app_id`),
+ADD INDEX `api_access_rule_common` (`access_rule`);
 
 CREATE TABLE IF NOT EXISTS `provider`
 (
@@ -202,4 +203,4 @@ CREATE TABLE IF NOT EXISTS `authority`
     COMMENT = '【权限】表';
 
 ALTER TABLE `authority`
-ADD INDEX `authority_unique_combine` (`api_id`, `role_id`);
+ADD INDEX `authority_unique_combine` (`role_id`, `api_id`);
