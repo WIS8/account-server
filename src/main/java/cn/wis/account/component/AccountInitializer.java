@@ -146,10 +146,10 @@ public class AccountInitializer implements ApplicationRunner {
 		addresses = addresses.parallelStream()
 				.filter(address -> address.endsWith(".1") == false)
 				.collect(Collectors.toSet());
-		if (addresses.size() == 1) {
+		if (addresses.size() > 0) {
 			return addresses.stream().findFirst().get();
 		} else {
-			throw new RuntimeException("Incorrect count of useful Ipv4 address on server: " + addresses.size());
+			throw new RuntimeException("No available Ipv4 address on server");
 		}
 	}
 

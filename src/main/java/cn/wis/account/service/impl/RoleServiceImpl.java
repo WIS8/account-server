@@ -1,7 +1,5 @@
 package cn.wis.account.service.impl;
 
-import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +18,7 @@ import cn.wis.account.model.table.Role;
 import cn.wis.account.model.vo.PageVo;
 import cn.wis.account.model.vo.RoleVo;
 import cn.wis.account.service.RoleService;
+import cn.wis.account.util.ResultHelper;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -69,11 +68,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public PageVo search(Page page) {
-		PageVo pageVo = new PageVo();
-		pageVo.setData(roleMapper.selectPage(page.getIndex(), page.getSize())
-				.parallelStream().map(this::getRoleVo).collect(Collectors.toList()));
-		pageVo.setTotal(roleMapper.countByKeyWord(page.getKeyWord()));
-		return pageVo;
+		return ResultHelper.translate(roleMapper.selectByPage(page), this::getRoleVo);
 	}
 
 	private void checkForeignKeyInDB(String roleId) {

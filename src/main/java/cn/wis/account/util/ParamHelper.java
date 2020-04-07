@@ -49,10 +49,13 @@ public final class ParamHelper {
 		} else {
 			checkValue(page.getIndex(), 1, Integer.MAX_VALUE);
 		}
-		if (page.getSize() == null) {
-			page.setSize(Constant.PAGE_DEFAULT_SIZE);
+		if (page.getCount() == null) {
+			page.setCount(Constant.PAGE_DEFAULT_COUNT);
 		} else {
-			checkValue(page.getSize(), 1, Constant.PAGE_MAX_SIZE);
+			checkValue(page.getCount(), 1, Constant.PAGE_MAX_COUNT);
+		}
+		if (StrUtil.isBlank(page.getKeyWord())) {
+			page.setKeyWord(null);
 		}
 	}
 

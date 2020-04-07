@@ -54,6 +54,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public MemberVo check() {
+		return getLoginMember(http);
+	}
+
+	@Override
 	public boolean logout() {
 		return tokenManager.removeToken(getLoginMember(http).getId());
 	}

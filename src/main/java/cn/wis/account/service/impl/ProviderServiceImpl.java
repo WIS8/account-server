@@ -1,7 +1,5 @@
 package cn.wis.account.service.impl;
 
-import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -89,11 +87,7 @@ public class ProviderServiceImpl implements ProviderService {
 
 	@Override
 	public PageVo search(Page page) {
-		PageVo pageVo = new PageVo();
-		pageVo.setData(providerMapper.selectPage(page.getIndex(), page.getSize())
-				.parallelStream().map(this::getProviderVo).collect(Collectors.toList()));
-		pageVo.setTotal(providerMapper.countByKeyWord(page.getKeyWord()));
-		return pageVo;
+		return ResultHelper.translate(providerMapper.selectByPage(page), this::getProviderVo);
 	}
 
 	private void checkForeignKeyInDB(String providerId) {

@@ -100,11 +100,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	public PageVo search(Page page) {
-		PageVo pageVo = new PageVo();
-		pageVo.setData(appMapper.selectPage(page.getIndex(), page.getSize())
-				.parallelStream().map(this::getApplicationVo).collect(Collectors.toList()));
-		pageVo.setTotal(appMapper.countByKeyWord(page.getKeyWord()));
-		return null;
+		return ResultHelper.translate(appMapper.selectByPage(page), this::getApplicationVo);
 	}
 
 	@Override

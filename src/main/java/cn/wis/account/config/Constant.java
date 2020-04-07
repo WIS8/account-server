@@ -15,15 +15,15 @@ public interface Constant {
 
 	public final static int ROLE_MAX_COUNT = 1024;
 
-	public final static int PAGE_MAX_SIZE = 256;
-	public final static int PAGE_DEFAULT_SIZE = 10;
+	public final static int PAGE_MAX_COUNT = 100;
+	public final static int PAGE_DEFAULT_COUNT = 10;
 
 	public final static int TEXT_MAX_LENGTH = 255;
 	public final static int NAME_MAX_LENGTH = 32;
 
 	public final static String PROVIDER_ID = "0000";
 
-	public final static String COOKIE_NAME = "cookie";
+	public final static String COOKIE_NAME = "x-token";
 	public final static String MEMBER_INFO = "login-member";
 
 	public final static String VISIT_ROLE = "0000";

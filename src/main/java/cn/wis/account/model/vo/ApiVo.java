@@ -7,7 +7,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class ApiVo extends AbstractVo {
 
-	private String providerId;
+	private String appId;
+
+	private String router;
+
+	private Integer accessRule;
 
 	private String appellation;
 

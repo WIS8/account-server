@@ -2,6 +2,7 @@ package cn.wis.account.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,11 @@ public class MemberController {
 			throw new ServiceException(ResultEnum.ILLEGAL);
 		}
 		return Result.trueResult(memberService.login(request));
+	}
+
+	@GetMapping("/check")
+	public Result check() {
+		return Result.trueResult(memberService.check());
 	}
 
 	@PostMapping("/logout")

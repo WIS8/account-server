@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.wis.account.component.AccountInitializer;
 import cn.wis.account.config.Constant;
@@ -26,9 +27,11 @@ import cn.wis.account.model.result.ServiceException;
 import cn.wis.account.model.table.Api;
 import cn.wis.account.model.table.Application;
 import cn.wis.account.model.vo.ApiVo;
+import cn.wis.account.model.vo.PageVo;
 import cn.wis.account.service.ApiService;
 import cn.wis.account.support.ApplicationSup;
 import cn.wis.account.util.ParamHelper;
+import cn.wis.account.util.ResultHelper;
 
 @Service
 public class ApiServiceImpl implements ApiService {
@@ -81,8 +84,8 @@ public class ApiServiceImpl implements ApiService {
 	}
 
 	@Override
-	public List<ApiVo> searchByProvider(Page page) {
-		return null;
+	public PageVo search(Page page) {
+		return ResultHelper.translate(apiMapper.selectByPage(page), this::getApiVo);
 	}
 
 	private void checkApiInfo(List<ApiDto> dtos, Map<String, Api> older,
@@ -139,6 +142,12 @@ public class ApiServiceImpl implements ApiService {
 		api.setAppellation(dto.getAppellation());
 		api.setCreateFields(creatorId);
 		return api;
+	}
+
+	private ApiVo getApiVo(Api api) {
+		ApiVo vo = new ApiVo();
+		BeanUtil.copyProperties(api, vo);
+		return vo;
 	}
 
 }

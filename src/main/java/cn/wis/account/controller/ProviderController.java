@@ -52,7 +52,10 @@ public class ProviderController {
 	}
 
 	@GetMapping("/search")
-	public Result search(@RequestBody Page page) {
+	public Result search(@RequestParam(name = "index", required = false) Integer index,
+			@RequestParam(name = "count", required = false) Integer count,
+			@RequestParam(name = "keyWord", required = false) String keyWord) {
+		Page page = new Page(index, count, keyWord);
 		ParamHelper.checkOrSetDefaultValue(page);
 		return Result.trueResult(providerService.search(page));
 	}
