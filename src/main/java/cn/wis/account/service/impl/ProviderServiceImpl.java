@@ -100,7 +100,7 @@ public class ProviderServiceImpl implements ProviderService {
 	private ProviderVo getProviderVo(Provider provider) {
 		ProviderVo providerVo = new ProviderVo();
 		BeanUtil.copyProperties(provider, providerVo);
-		providerVo.setAppName(appSup.checkAppId(provider.getId()).getAppellation());
+		providerVo.setAppName(appSup.checkAppId(provider.getAppId()).getAppellation());
 		providerVo.setUniqueParamNumber(paramValueMapper.countByProvider(provider.getId()));
 		return providerVo;
 	}

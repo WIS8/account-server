@@ -63,6 +63,10 @@ public class TokenManager {
 				&& tokens.remove(token.getCookie()) != null;
 	}
 
+	public int getOnlineNumber() {
+		return tokens.size() >> 1;
+	}
+
 	public Token updateToken(String cookie) {
 		return updateCookie(checkAndGetToken(cookie));
 	}

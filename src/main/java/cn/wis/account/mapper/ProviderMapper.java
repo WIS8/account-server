@@ -41,7 +41,7 @@ public interface ProviderMapper extends BaseMapper<Provider> {
 	@Select({"<script>"
 			+ "SELECT SQL_CALC_FOUND_ROWS * FROM provider "
 			+ "<if test='page.keyWord != null'>"
-			+ "WHERE appellation LIKE CONCAT('%', #{page.keyWord}, '%') "
+			+ "WHERE identifier LIKE CONCAT('%', #{page.keyWord}, '%') "
 			+ "</if>"
 			+ "LIMIT ${(page.index - 1) * page.count}, #{page.count};"
 			+ "SELECT FOUND_ROWS() AS total;"

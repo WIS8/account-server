@@ -147,6 +147,7 @@ public class ApiServiceImpl implements ApiService {
 	private ApiVo getApiVo(Api api) {
 		ApiVo vo = new ApiVo();
 		BeanUtil.copyProperties(api, vo);
+		vo.setAppName(appSup.checkAppIdInCache(api.getAppId()).getAppellation());
 		return vo;
 	}
 

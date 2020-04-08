@@ -39,7 +39,7 @@ public final class ResultHelper {
 			pageVo.setTotal(0);
 		} else {
 			pageVo.setData(((List<T>) result.get(0))
-					.parallelStream().map(conveter).collect(Collectors.toList()));
+					.stream().map(conveter).collect(Collectors.toList()));
 			pageVo.setTotal((Integer) result.get(1).get(0));
 		}
 		return pageVo;

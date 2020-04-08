@@ -18,6 +18,7 @@ import cn.wis.account.model.table.Role;
 import cn.wis.account.model.vo.PageVo;
 import cn.wis.account.model.vo.RoleVo;
 import cn.wis.account.service.RoleService;
+import cn.wis.account.support.RoleSup;
 import cn.wis.account.util.ResultHelper;
 
 @Service
@@ -31,6 +32,9 @@ public class RoleServiceImpl implements RoleService {
 
 	@Resource
 	private RoleMapper roleMapper;
+
+	@Resource
+	private RoleSup roleSup;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -50,6 +54,7 @@ public class RoleServiceImpl implements RoleService {
 		if (roleMapper.deleteById(roleId) != 1) {
 			throw new ServiceException(ResultEnum.DELETE_ERROR);
 		}
+		roleSup.removeFromCache(roleId);
 	}
 
 	@Override
@@ -64,6 +69,7 @@ public class RoleServiceImpl implements RoleService {
 		if (roleMapper.updateById(role) != 1) {
 			throw new ServiceException(ResultEnum.UPDATE_ERROR);
 		}
+		roleSup.flushCache(request.getId(), request.getAppellation());
 	}
 
 	@Override

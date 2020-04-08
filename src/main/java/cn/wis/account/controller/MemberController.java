@@ -6,13 +6,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.util.StrUtil;
 import cn.wis.account.config.Constant;
+import cn.wis.account.model.entity.Page;
 import cn.wis.account.model.request.LoginRequest;
 import cn.wis.account.model.request.PasswordUpdateRequest;
 import cn.wis.account.model.request.RegisterRequest;
+import cn.wis.account.model.request.RoleModifyRequest;
 import cn.wis.account.model.result.Result;
 import cn.wis.account.model.result.ResultEnum;
 import cn.wis.account.model.result.ServiceException;
@@ -59,6 +62,34 @@ public class MemberController {
 		ParamHelper.checkValue(request.getOldPassword());
 		memberService.modifyPassword(request);
 		return Result.trueResult();
+	}
+
+	@PostMapping("/modify-role")
+	public Result modifyRole(@RequestBody RoleModifyRequest request) {
+		ParamHelper.checkValue(request.getRoleName());
+		ParamHelper.checkValue(request.getMemberId());
+		memberService.modifyRole(request);
+		return Result.trueResult();
+	}
+
+	@GetMapping("/search")
+	public Result search(@RequestParam(name = "index", required = false) Integer index,
+			@RequestParam(name = "count", required = false) Integer count,
+			@RequestParam(name = "keyWord", required = false) String keyWord) {
+		Page page = new Page(index, count, keyWord);
+		ParamHelper.checkOrSetDefaultValue(page);
+		return Result.trueResult(memberService.search(page));
+	}
+
+	@GetMapping("/view")
+	public Result view(@RequestParam(name = "memberId") String memberId) {
+		ParamHelper.checkValue(memberId);
+		return Result.trueResult(memberService.view(memberId));
+	}
+
+	@GetMapping("/get-online-info")
+	public Result getOnlineInfo() {
+		return Result.trueResult(memberService.getOnlineInfo());
 	}
 
 }

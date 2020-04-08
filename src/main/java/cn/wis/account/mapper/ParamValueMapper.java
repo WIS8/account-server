@@ -15,6 +15,10 @@ public interface ParamValueMapper extends BaseMapper<ParamValue> {
 			+ "WHERE provider_id = #{providerId}"})
 	int countByProvider(@Param("providerId") String providerId);
 
+	@Select({"SELECT COUNT(id) FROM param_value "
+			+ "WHERE param_id = #{paramId}"})
+	int countByParam(@Param("paramId") String paramId);
+
 	@Select({"SELECT * FROM param_value "
 			+ "WHERE provider_id = #{providerId}"})
 	List<ParamValue> selectAllInProvider(@Param("providerId") String providerId);
