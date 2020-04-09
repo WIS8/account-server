@@ -26,6 +26,8 @@ public enum ResultEnum {
 	WITHOUT_COOKIE(false, "account-10017", "cookie缺失"),
 	REPEAT_IN_LOGIN(false, "account-10018", "账号重复登录"),
 
+	AUTH_ALREADY_IN(false, "account-10100", "Auth has been added"),
+
 	;
 
 	private final Boolean success;

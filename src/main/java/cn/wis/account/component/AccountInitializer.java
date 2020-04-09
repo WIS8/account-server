@@ -180,6 +180,11 @@ public class AccountInitializer implements ApplicationRunner {
 		for (String controller : context.getBeanNamesForAnnotation(Controller.class)) {
 			Class<?> klass = context.getType(controller);
 			if (ofApiPackage(klass)) {
+				try {
+					klass = Class.forName(getOriginalClassName(klass));
+				} catch (Exception e) {
+					throw new RuntimeException("Cannot load class", e);
+				}
 				String api = apiPrefix + compress(getApi(klass));
 				for (Method method : klass.getDeclaredMethods()) {
 					if (isAnApiMethod(method)) {
@@ -205,6 +210,11 @@ public class AccountInitializer implements ApplicationRunner {
 		return klass.getName().startsWith("cn.wis.account.controller");
 	}
 
+	private String getOriginalClassName(Class<?> klass) {
+		int index = klass.getName().indexOf('$');
+		return klass.getName().substring(0, index == -1 ? klass.getName().length() : index);
+	}
+
 	private boolean isAnApiMethod(Method method) {
 		return Modifier.isPublic(method.getModifiers())
 				&& Modifier.isStatic(method.getModifiers()) == false
@@ -219,27 +229,27 @@ public class AccountInitializer implements ApplicationRunner {
 	private String getApi(AnnotatedElement element) {
 		RequestMapping a1 = element.getAnnotation(RequestMapping.class);
 		if (a1 != null) {
-			return makeApi(a1.path());
+			return makeApi(a1.value());
 		}
 		PostMapping a2 = element.getAnnotation(PostMapping.class);
 		if (a2 != null) {
-			return makeApi(a2.path());
+			return makeApi(a2.value());
 		}
 		GetMapping a3 = element.getAnnotation(GetMapping.class);
 		if (a3 != null) {
-			return makeApi(a3.path());
+			return makeApi(a3.value());
 		}
 		PutMapping a4 = element.getAnnotation(PutMapping.class);
 		if (a4 != null) {
-			return makeApi(a4.path());
+			return makeApi(a4.value());
 		}
 		DeleteMapping a5 = element.getAnnotation(DeleteMapping.class);
 		if (a5 != null) {
-			return makeApi(a5.path());
+			return makeApi(a5.value());
 		}
 		PatchMapping a6 = element.getAnnotation(PatchMapping.class);
 		if (a6 != null) {
-			return makeApi(a6.path());
+			return makeApi(a6.value());
 		}
 		return "";
 	}
