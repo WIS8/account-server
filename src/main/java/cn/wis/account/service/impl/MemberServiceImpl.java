@@ -96,6 +96,10 @@ public class MemberServiceImpl implements MemberService {
 		if (memberMapper.updateById(member) != 1) {
 			throw new ServiceException(ResultEnum.UPDATE_ERROR);
 		}
+		Token token = tokenManager.getTokenByMemberId(request.getMemberId());
+		if (token != null && token.getCookie() != null) {
+			token.getMemberVo().setRoleId(role.getId());
+		}
 	}
 
 	@Override

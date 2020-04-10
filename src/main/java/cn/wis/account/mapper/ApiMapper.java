@@ -64,7 +64,7 @@ public interface ApiMapper extends BaseMapper<Api> {
 
 	@Select({"<script>"
             + "SELECT DISTINCT app_id FROM api "
-            + "WHERE access_rule != #{code} "
+            + "WHERE access_rule = #{code} "
             + "<if test='list != null and list.size != 0'>"
             + "AND id NOT IN "
             + "<foreach collection='list' item='item' open='(' separator=',' close=')'>"
@@ -72,7 +72,7 @@ public interface ApiMapper extends BaseMapper<Api> {
             + "</foreach>"
             + "</if>"
             + "</script>"})
-	List<Api> selectAllNotInRuleOrApi(@Param("list") List<String> apiIds, @Param("code") int code);
+	List<Api> selectAllInRuleButApi(@Param("list") List<String> apiIds, @Param("code") int code);
 
 	@Select({"<script>"
 			+ "SELECT SQL_CALC_FOUND_ROWS * FROM api "

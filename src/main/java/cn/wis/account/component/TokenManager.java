@@ -79,6 +79,10 @@ public class TokenManager {
 		return checkAndGetToken(cookie);
 	}
 
+	public Token getTokenByMemberId(String memberId) {
+		return tokens.get(memberId);
+	}
+
 	public boolean contains(String cookie) {
 		return tokens.containsKey(cookie);
 	}

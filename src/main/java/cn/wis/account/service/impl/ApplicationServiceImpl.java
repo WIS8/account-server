@@ -114,7 +114,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 				? new HashSet<String>() : apiRules.parallelStream()
 				        .filter(apiRule -> RuleListEnum.WHITE.getCode() == apiRule.getAccessRule())
 				        .map(Api::getAppId).collect(Collectors.toSet());
-		apiRules = apiMapper.selectAllNotInRuleOrApi(blackList, RuleListEnum.WHITE.getCode());
+		apiRules = apiMapper.selectAllInRuleButApi(blackList, RuleListEnum.BLACK.getCode());
 		if (CollectionUtil.isNotEmpty(apiRules)) {
 			apiRules.stream().forEach(api -> whiteApps.add(api.getAppId()));
 		}
